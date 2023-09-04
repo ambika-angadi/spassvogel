@@ -1,24 +1,44 @@
-import logo from './logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css';
+import SiteFooter from './components/Common/SiteFooter';
+import SiteNav from './components/Common/SiteNav';
+import HomePage from './components/home/HomePage';
+import { Route, Routes } from 'react-router-dom';
+
+import Contacts from './components/contacts/Contacts';
+import awsExports from './aws-exports';
+import {Amplify} from 'aws-amplify';
+import {Authenticator} from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import QuoteApi from './components/jokeApi/QuoteApi';
+import DadJoke from './components/jokeApi/DadJoke';
+import StaticJokes from './components/static/StaticJokes';
+
+Amplify.configure(awsExports);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <Authenticator login-Mechanisms={['email']} > 
+    {({signOut,user}) => (
+    <div>  
+    
+        <SiteNav logOut={signOut}/>
+        <Routes>
+          <Route path='*' element={<HomePage/>}/>
+          <Route path='/'  exact={true} element={<HomePage/>}/> 
+          
+          <Route path='/contacts' element={<Contacts/>}/>
+          <Route path='/quote' element={<QuoteApi/>}/>
+          <Route path='/dadjoke' element={<DadJoke/>}/>
+          <Route path='/static' element={<StaticJokes/>}/>
+        </Routes>
+        <SiteFooter/>
+        
+     
     </div>
+    ) }
+    </Authenticator>
+
   );
 }
 
